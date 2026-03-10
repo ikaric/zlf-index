@@ -1,0 +1,21 @@
+# Source distribution: only ship what's needed to build and install the package.
+# Benchmarks, tests, datasets, and dev tooling stay in the git repo only.
+
+include LICENSE
+include README.md
+include pyproject.toml
+include setup.py
+
+# Cython source + generated C fallback
+recursive-include src/zlfi *.py *.pyx *.pxd *.c
+
+# Exclude everything else
+prune benchmarks
+prune tests
+prune datasets
+prune .benchmarks
+prune .vscode
+exclude .env
+exclude .editorconfig
+exclude .pre-commit-config.yaml
+exclude Makefile
