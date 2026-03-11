@@ -21,23 +21,24 @@ jobs:
           path: dist/*.tar.gz
 
   build-wheels:
-    name: Build wheels on ${{ matrix.os }}
+    name: Build wheels on ${{ matrix.os }} (${{ matrix.python-version }})
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
+        python-version: ["3.12", "3.13"]
     steps:
       - uses: actions/checkout@v6
-      - uses: pypa/cibuildwheel@v2.22
-        env:
-          CIBW_BUILD: "cp312-* cp313-*"
-          CIBW_SKIP: "*-musllinux_* *-win32 *_i686"
-          CIBW_BEFORE_BUILD: pip install cython>=3.0
-          CIBW_BUILD_VERBOSITY: 1
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install cython>=3.0 build
+      - run: python -m build --wheel
       - uses: actions/upload-artifact@v6
         with:
-          name: wheels-${{ matrix.os }}
-          path: wheelhouse/*.whl
+          name: wheel-${{ matrix.os }}-${{ matrix.python-version }}
+          path: dist/*.whl
 
   publish:
     name: Publish to PyPI
