@@ -7,7 +7,8 @@
 
 [Why Not Just BM25?](#why-not-just-bm25) • [Key Results](#key-results) • [Quick Start](#quick-start) • [The Alpha Parameter](#the-alpha-parameter) • [Algorithm](#algorithm) • [Benchmarks](#benchmarks) • [Native Use Cases](#native-use-cases)
 
-[![Python 3.14+](https://img.shields.io/badge/Python-3.14+-3776AB?logo=python&logoColor=white)](https://python.org)
+[![Python 3.12+](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)](https://python.org)
+[![PyPI](https://img.shields.io/pypi/v/zlfi)](https://pypi.org/project/zlfi/)
 [![uv](https://img.shields.io/badge/uv-Package%20Manager-DE5FE9)](https://docs.astral.sh/uv/)
 [![Pytest](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -73,13 +74,22 @@ Full benchmark tables and methodology are detailed in the [Benchmarks](#benchmar
 
 ## Quick Start
 
-**Prerequisites:** Python 3.14+, [uv](https://docs.astral.sh/uv/getting-started/installation/)
+```bash
+pip install zlfi
+```
+
+<details>
+<summary>Development install</summary>
+
+**Prerequisites:** Python 3.12+, [uv](https://docs.astral.sh/uv/getting-started/installation/)
 
 ```bash
 git clone https://github.com/ikaric/zlfi.git
 cd zlfi
 make install-dev
 ```
+
+</details>
 
 ```python
 from zlfi import score, Document, Corpus
