@@ -26,7 +26,7 @@ BM25 is the standard lexical retrieval algorithm. It works well for English keyw
 
 ZLFI is a fundamentally different algorithm. It evaluates the **contiguous, ordered structural overlap** between two sequences using a Suffix Automaton (DAWG) in linear time O(|N| + |M|). It requires no tokenizer, no stemmer, no corpus-level statistics, and works identically across all languages and scripts — from English to Japanese to Telugu — with zero configuration.
 
-This is not a BM25 replacement for English keyword search. It is a **complementary similarity metric** with its own strengths, and the two can be fused via a tunable `alpha` parameter for hybrid retrieval.
+This is not a BM25 replacement for English keyword search. It is a **complementary similarity metric** with its own strengths, and the two can be fused via a tunable `alpha` parameter for hybrid retrieval. *(Note: True streaming and stateless scoring requires `alpha=1.0`; the default hybrid mode `alpha=0.5` incorporates BM25, and therefore reintroduces the need for global corpus statistics).*
 
 > **Research Paper:** *[Contextual Similarity: Quasilinear-Time Search and Comparison for Sequential Data](https://ieeexplore.ieee.org/document/8252957/)* — Ilhan Karić, University of "Džemal Bijedić", Faculty of Information Technologies (IEEE ICAT, 2017).
 
@@ -314,6 +314,8 @@ Evaluated via `make benchmark-speed` over a 5,000-document synthetic corpus, com
 
 Indexing is slower because ZLFI constructs a full Suffix Automaton DAWG per document alongside the BM25 index. This upfront cost enables the substantially faster query-time performance shown above.
 
+**Note on Dynamic Corpora:** For static corpora, this indexing latency is a one-time non-issue. For highly dynamic databases where documents are constantly inserted or updated, this could become a bottleneck. The current `Corpus` implementation is designed for static workloads and does not support dynamic insertions; it must be rebuilt or appended to in batches.
+
 ### BEIR 2.0 (Preliminary — 6 of 18 Datasets)
 
 Evaluated via `make benchmark-beir-quick`. Both systems rank the same candidate document pool. Full BEIR evaluation requires 64+ GB RAM.
@@ -384,7 +386,7 @@ Our BM25 quick-test average (40.2% NDCG@10 across 6 datasets) is consistent with
 
 ZLFI is not limited to document reranking. Because it operates on raw character arrays in linear time with no global state, it extends naturally to domains where BM25 is architecturally unsuitable:
 
-**LLM Hallucination Detection.** Score a model-generated claim against the source document. If the structural overlap is statistically indistinguishable from random noise (as formally defined in the [original paper](https://ieeexplore.ieee.org/document/8252957/)), the claim is likely hallucinated.
+**Linear-Time LLM Hallucination Detection.** Score a model-generated claim against the source context. If the structural overlap is statistically indistinguishable from random noise (as formally defined in the [original paper](https://ieeexplore.ieee.org/document/8252957/)), the claim is likely hallucinated. Being able to mathematically prove that an LLM's output has minimal contiguous structural overlap with the source context—in linear time, without needing a second "evaluator" LLM—is a massive standalone capability enabled by ZLFI.
 
 **Information and Language Detection.** The algorithm's expected overlap against uniform random data can be computed analytically. This enables quantitative determination of whether an unknown byte sequence contains structured language or is encrypted/random noise.
 
@@ -420,7 +422,8 @@ list(tools.values())[matched]()  # Executes turn_on_lights()
 |----------|------|------|
 | **Global state required?** | Yes — full inverted index | No — each document scored independently |
 | **Can stream documents?** | No — IDF requires full corpus | Yes — constant memory, one document at a time |
-| **Memory for 32M docs** | ~80–120 GB (inverted index) | ~5 MB (streaming, one at a time) |
+| **Memory for 1M docs (Fully Loaded)**| ~2–3 GB (inverted index) | ~50–100+ GB depending on doc length (DAWGs in RAM) |
+| **Memory for 32M docs (Streaming)** | N/A (requires full load) | ~5 MB (one document at a time) |
 | **External engines?** | Typically Elasticsearch/Lucene | Pure Python/Cython, no dependencies |
 
 ### Strengths and Trade-offs
