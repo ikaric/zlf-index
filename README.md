@@ -76,8 +76,8 @@ Full benchmark tables and methodology are detailed in the [Benchmarks](#benchmar
 **Prerequisites:** Python 3.14+, [uv](https://docs.astral.sh/uv/getting-started/installation/)
 
 ```bash
-git clone https://github.com/ikaric/zlf-index.git
-cd zlf-index
+git clone https://github.com/ikaric/zlfi.git
+cd zlfi
 make install-dev
 ```
 

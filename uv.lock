@@ -4336,8 +4336,8 @@ wheels = [
 ]
 
 [[package]]
-name = "zlf-index"
-version = "0.1.0"
+name = "zlfi"
+version = "1.0.0"
 source = { editable = "." }
 
 [package.optional-dependencies]

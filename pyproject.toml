@@ -3,7 +3,7 @@ requires = ["setuptools>=69.0", "Cython>=3.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "zlf-index"
+name = "zlfi"
 version = "1.0.0"
 description = "Zipf Latent Fusion (ZLF) sequence similarity index"
 readme = "README.md"
@@ -21,9 +21,9 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/ikaric/zlf-index"
-Repository = "https://github.com/ikaric/zlf-index"
-Issues = "https://github.com/ikaric/zlf-index/issues"
+Homepage = "https://github.com/ikaric/zlfi"
+Repository = "https://github.com/ikaric/zlfi"
+Issues = "https://github.com/ikaric/zlfi/issues"
 
 [project.optional-dependencies]
 dev = [
